@@ -1,11 +1,13 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, TypedDict
 
 import requests
 
 from .models import (
     APIServer,
     BooleanResponse,
+    CartPaymentRefundRequest,
     CartPaymentRefundResponse,
+    CreateUpdateCartRequest,
     CreateUpdateCartResponse,
     GetCartOrdersResponse,
     GetCartResponse,
@@ -37,7 +39,7 @@ class MsbPayAPI:
         json = response.json()
         return json
 
-    def _post(self, endpoint: str, params: Dict[str, Any] = {}, data: Optional[Dict[str, Any]] = None) -> Any:
+    def _post(self, endpoint: str, params: Dict[str, Any] = {}, data: Optional[TypedDict] = None) -> Any:
         response = self.session.post(
             self.server.value + endpoint, params=params, json=data)
         response.raise_for_status()
@@ -45,7 +47,7 @@ class MsbPayAPI:
         json = response.json()
         return json
 
-    def _put(self, endpoint: str, params: Dict[str, Any] = {}, data: Optional[Dict[str, Any]] = None) -> Any:
+    def _put(self, endpoint: str, params: Dict[str, Any] = {}, data: Optional[TypedDict] = None) -> Any:
         response = self.session.put(
             self.server.value + endpoint, params=params, json=data)
         response.raise_for_status()
@@ -70,19 +72,19 @@ class MsbPayAPI:
     def get_carts(self, **kwargs: Any) -> GetCartsResponse:
         return self._get('/carts', kwargs)
 
-    def create_cart(self, data: Dict[str, Any]) -> CreateUpdateCartResponse:
+    def create_cart(self, data: CreateUpdateCartRequest) -> CreateUpdateCartResponse:
         return self._post('/carts', data=data)
 
     def get_cart(self, cart_id: str) -> GetCartResponse:
         return self._get(f'/carts/{cart_id}')
 
-    def update_cart(self, cart_id: str, data: Dict[str, Any]) -> CreateUpdateCartResponse:
+    def update_cart(self, cart_id: str, data: CreateUpdateCartRequest) -> CreateUpdateCartResponse:
         return self._put(f'/carts/{cart_id}', data=data)
 
     def delete_cart(self, cart_id: str) -> BooleanResponse:
         return self._delete(f'/carts/{cart_id}')
 
-    def add_items_to_cart(self, cart_id: str, data: Dict[str, Any]) -> CreateUpdateCartResponse:
+    def add_items_to_cart(self, cart_id: str, data: CreateUpdateCartRequest) -> CreateUpdateCartResponse:
         return self._post(f'/carts/{cart_id}/addItems', data=data)
 
     def process_cart(self, cart_id: str) -> ProcessCartResponse:
@@ -94,7 +96,7 @@ class MsbPayAPI:
     def get_cart_payments(self, cart_id: str) -> SearchPaymentsResponse:
         return self._get(f'/carts/{cart_id}/payments')
 
-    def refund(self, cart_id: str, payment_id: str, data: Dict[str, Any]) -> CartPaymentRefundResponse:
+    def refund(self, cart_id: str, payment_id: str, data: CartPaymentRefundRequest) -> CartPaymentRefundResponse:
         return self._post(f'/carts/{cart_id}/payments/{payment_id}/refund', data=data)
 
     def get_payments(self, client_id: str, **kwargs: Any) -> SearchPaymentsResponse:
