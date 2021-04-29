@@ -1,5 +1,9 @@
 # PySchoolBucks
 Python wrapper for the MySchoolBucks Pay API
+
+## Installation
+    pip install PySchoolBucks
+
 ## Usage
 ```python
 from msb import MsbPayAPI, APIServer
