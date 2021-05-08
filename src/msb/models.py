@@ -46,7 +46,7 @@ class Cart(TypedDict):
     allowDuplicatePayments: str
     loginPolicy: str
     checkoutStyle: str
-    cartItems: 'CartItem'
+    cartItems: List['CartItem']
     paymentPreauthPolicy: str
     webhookSubscriptions: List['WebhookSubscription']
     
